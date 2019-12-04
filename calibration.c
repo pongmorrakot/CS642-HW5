@@ -59,14 +59,17 @@ int main(int argc, char** argv)
     char array[4*1024]; // modern processors have 4KB ways in L1
     memset(array, -1, 4*1024*sizeof(char));
     unsigned long hit_time = 0, miss_time = 0;    
-    int i;
-
-    /* Calculate average hit time for a cache block */
-
-
-    /* Calculate average miss time for a cache block */
-
-
-    printf("%lu,%lu\n", hit_time, miss_time);
+    
+    for(int i = 0; i < 4*1024; i++){
+        /* Calculate average hit time for a cache block */
+        maccess(&array[i]);
+        hit_time += measure_one_block_access_time(&array[i]);
+    }
+    for(int i = 0; i < 4*1024; i++){
+        /* Calculate average miss time for a cache block */
+        flush(&array[i]);
+        miss_time += measure_one_block_access_time(&array[i]);
+    }
+    printf("%lu,%lu\n", hit_time/(4*1024), miss_time/(4*1024));
     return 0;
 }
