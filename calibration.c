@@ -63,11 +63,13 @@ int main(int argc, char** argv)
     for(int i = 0; i < 4*1024; i++){
         /* Calculate average hit time for a cache block */
         maccess(&array[i]);
+        sched_yield();
         hit_time += measure_one_block_access_time(&array[i]);
     }
     for(int i = 0; i < 4*1024; i++){
         /* Calculate average miss time for a cache block */
         flush(&array[i]);
+        sched_yield();
         miss_time += measure_one_block_access_time(&array[i]);
     }
     printf("%lu,%lu\n", hit_time/(4*1024), miss_time/(4*1024));
