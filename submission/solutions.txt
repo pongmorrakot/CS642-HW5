@@ -1,0 +1,17 @@
+calibration.c
+
+For calculating hit time: access an address using maccess() and then measure the time took to access that address. The process is done to every address in the array created.
+for miss time: flush an address using flush() and then measure the time took to access that address. The process is done to every address in the array created.
+
+attack.c
+
+
+
+Part C
+Prime+Probe:
+1.
+2.
+Spectre and Meltdown:
+1.
+2.
+3.
