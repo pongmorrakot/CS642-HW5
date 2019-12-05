@@ -4,14 +4,16 @@ For calculating hit time: access an address using maccess() and then measure the
 for miss time: flush an address using flush() and then measure the time took to access that address. The process is done to every address in the array created.
 
 attack.c
+This attack will run indefinitely. First, the attack studies how the victim access the csv file and obtains the offset. The addresses the attacker accesses are also randomized to prevent prefetching.
+For each cache line, the attacker will flush to clear the memory. Then it yields to the victim to run, and accesses the memory. Once the victim finishes accessing the memory, the attacker will try to access the same address and see if it gets a hit or a miss by measuring the time it takes to access. If the time is less than the hit threshold, it implies that there is a cache hit. Finally, the attacker proceeds to flush the cache again to prevent hit next time.
 
-
+[Flush to clear memory -> yield to the victim process -> Attacker access the same address -> Measure time it takes to access -> if time < threshold = take note of which index has a cache hit-> flush to prevent hit the next time]
 
 Part C
 Prime+Probe:
-1.
-2.
+1. Prime+Probe would be harder because the file will be not shared. At a result, the addresses of indices will be harder to find.
+2. The cache size will affect Prime+Probe performance. The larger cache set may make it harder to narrow down which addresses have been accessed by the victim and vice versa. The organization of caches does not affect Flush+Reload.
 Spectre and Meltdown:
-1.
-2.
-3.
+1. Spectre because the victim would leak its information to the attacker due to speculative execution being manipulated by the attacker.
+2. Meltdown because the attacker can access all the data over the memory, melting down the security boundaries between programs. It does not need knowledge of the victim program, making it easier to set up an attack.
+3. Meltdown
