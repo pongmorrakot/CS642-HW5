@@ -116,10 +116,8 @@ int main(int argc, char* argv[])
     int N = 10;
     int index;
 
-    for(int j = 0; j < maxrange; j++){
-        flush(addr + offset);
-        offset += csv_offsets[j];
-    }
+    int printed[maxrange];
+    for(int j = 0; j < maxrange; j++) printed[j] = 0;
 
     while(1){
         int arr[maxrange];
@@ -139,23 +137,31 @@ int main(int argc, char* argv[])
                 sched_yield();
                 time = measure_one_block_access_time(addr + offset);
 
-                //print if cache hit
+                // take note if cache hit
                 if(time <= hit_time){
                     arr[index]++;
                 }
+                flush(addr + offset);
             }
-            flush(addr + offset);       
+            
         }
+
+        // print
         int maxIndex = 0;
-            int maxVal = 0;
-            for(int j = 0; j < maxrange; j++){
-                if(arr[j] > maxVal){
-                    maxIndex = j;
-                    maxVal = arr[j];
-                }
+        int maxVal = 0;
+        for(int j = 0; j < maxrange; j++){
+            if(arr[j] > maxVal){
+                maxIndex = j;
+                maxVal = arr[j];
             }
-            if(maxVal > 0) printf("%d\n", maxIndex);
-    }
-       
+        }
+        // if(maxVal > 0){
+        if(maxVal > 0 && printed[maxIndex] == 0){
+            printf("%d\n", maxIndex);
+            printed[maxIndex] = 1;
+        } 
+        
+    }    
+
     return 0;    
 }
