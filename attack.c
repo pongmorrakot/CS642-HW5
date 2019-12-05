@@ -116,10 +116,17 @@ int main(int argc, char* argv[])
     int N = 10;
     int index;
 
-    
+    for(int j = 0; j < maxrange; j++){
+        flush(addr + offset);
+        offset += csv_offsets[j];
+    }
 
     while(1){
+        int arr[maxrange];
+        for(int j = 0; j < maxrange; j++) arr[j] = 0;
+
         for(int i = 0; i < maxrange; i++){
+            
             index = (i*prime + 64) % maxrange;
             offset = 0;
             //access the value at index
@@ -127,20 +134,27 @@ int main(int argc, char* argv[])
                 offset += csv_offsets[j];
             }
 
-            flush(addr + offset);
-            sched_yield();
-            time = measure_one_block_access_time(addr + offset);
-
-            //print if cache hit
-            if(time <= hit_time){
-                printf("%d\n",index);
-            }
-
-            for(int j = 0; j < maxrange; j++){
+            for(int j = 0; j < N; j++){
                 flush(addr + offset);
-                offset += csv_offsets[j];
+                sched_yield();
+                time = measure_one_block_access_time(addr + offset);
+
+                //print if cache hit
+                if(time <= hit_time){
+                    arr[index]++;
+                }
             }
+            flush(addr + offset);       
         }
+        int maxIndex = 0;
+            int maxVal = 0;
+            for(int j = 0; j < maxrange; j++){
+                if(arr[j] > maxVal){
+                    maxIndex = j;
+                    maxVal = arr[j];
+                }
+            }
+            if(maxVal > 0) printf("%d\n", maxIndex);
     }
        
     return 0;    
